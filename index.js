@@ -1,19 +1,23 @@
 // === Constants ===
 const BASE = "https://fsa-puppy-bowl.herokuapp.com/api";
-const COHORT = "/2505-ftb-et-web-ft-JohnN"; // Make sure to change this!
-const API = BASE + COHORT;
+const COHORT = "/2505-JohnN"; // Make sure to change this!
+const RESOURCE = "/players"
+const API = BASE + COHORT + RESOURCE;
 const div = "app";
 
 const state = {
-  artists: [],
-  selectedArtist: []
+  players: [],
+  selectedPlayer: null,
+  teams: [],
+  bench: [],
+  field: []
 }
 
-async function getArtists() {
+async function GetPlayers() {
   try {
     const response = await fetch(API);
     const result = await response.json();
-    artists = result.data;
+    state.players = result.data.players;
     render();
   } catch(e) {
     console.error(e);
@@ -21,53 +25,53 @@ async function getArtists() {
 }
 
 
-async function getArtist(id) {
+async function getPlayer(id) {
   try {
     const response = await fetch(API + "/" + id);
     const result = await response.json();
-    selectedArtist = result.data;
+    state.selectedPlayer = result.data.player;
     render();
   } catch (e) {
     console.error(e);
   }
 }
 
-function ArtistListItem(artist) {
+function PlayerListItem(player) {
   const $li = document.createElement("li");
   $li.innerHTML = `
-  <a href="#selected">${artist.name}</a>
+  <a href="#selected">${player.name}</a>
   `;
-  $li.addEventListener("click", () => getArtist(artist.id));
+  $li.addEventListener("click", () => getPlayer(player.id));
   return $li;
 }
 
-function ArtistList() {
+function PlayerList() {
   const $ul = document.createElement("ul");
-  $ul.classList.add("lineup");
-
-  const $artists = artists.map(ArtistListItem);
-  $ul.replaceChildren(...$artists)
+  $ul.classList.add("Roster");
+console.log(state);
+  const $players = state.players.map(PlayerListItem);
+  $ul.replaceChildren(...$players)
 
   return $ul;
 }
 
-function ArtistDetails() {
-  if (!selectedArtist) {
+function PlayerDetails() {
+  if (!state.selectedPlayer) {
     const $p = document.createElement("p");
-    $p.textContent = "Please select an artist to learn more."
+    $p.textContent = "Please select a player to learn more."
     return $p;
   }
-const $artist = document.createElement("section");
-$artist.classList.add("artist");
-$artist.innerHTML = `
-   <h3>${selectedArtist.name} #${selectedArtist.id}</h3>
+const $player = document.createElement("section");
+$player.classList.add("player");
+$player.innerHTML = `
+   <h3>${state.selectedPlayer.name} #${state.selectedPlayer.id}</h3>
     <figure>
-      <img alt=${selectedArtist.name} src=${selectedArtist.imageUrl} />
+      <img alt=${state.selectedPlayer.name} src=${state.selectedPlayer.imageUrl} />
     </figure>
-    <p>${selectedArtist.description}</p>
-    <button>Remove artist</button>
+    <p>${state.selectedPlayer.description}</p>
+    <button>Remove player</button>
 `;
-return $artist;
+return $player;
 
 }
 
@@ -77,22 +81,22 @@ function render() {
     <h1>Fullstack Pupp Bowl!</h1>
     <main>
       <section>
-        <h2>Lineup</h2>
-        <ArtistList></ArtistList>
+        <h2>Roster</h2>
+        <PlayerList></PlayerList>
       </section>
       <section id="selected">
-        <h2>Artist Details</h2>
-        <ArtistDetails></ArtistDetails>
+        <h2>Player Details</h2>
+        <PlayerDetails></PlayerDetails>
       </section>
     </main>
   `;
-  $app.querySelector("ArtistList").replaceWith(ArtistList());
+  $app.querySelector("PlayerList").replaceWith(PlayerList());
 
-  $app.querySelector("ArtistDetails").replaceWith(ArtistDetails());
+  $app.querySelector("PlayerDetails").replaceWith(PlayerDetails());
 }
 
 async function init() {
-  await getArtists();
+  await GetPlayers();
   render();
 }
 
