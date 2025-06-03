@@ -2,7 +2,7 @@
 const BASE = "https://fsa-puppy-bowl.herokuapp.com/api";
 const COHORT = "/2505-ftb-et-web-ft-JohnN"; // Make sure to change this!
 const API = BASE + COHORT;
-
+const div = "app";
 
 const state = {
   artists: [],
@@ -45,7 +45,7 @@ function ArtistList() {
   const $ul = document.createElement("ul");
   $ul.classList.add("lineup");
 
-  const $artists = selectedArtists.map(ArtistListItem);
+  const $artists = artists.map(ArtistListItem);
   $ul.replaceChildren(...$artists)
 
   return $ul;
@@ -74,13 +74,11 @@ return $artist;
 function render() {
   const $app = document.querySelector("#app");
   $app.innerHTML = `
-    <h1>Fullstack Gala Admin</h1>
+    <h1>Fullstack Pupp Bowl!</h1>
     <main>
       <section>
         <h2>Lineup</h2>
         <ArtistList></ArtistList>
-        <h3>Invite a new artist</h3>
-        <NewArtistForm></NewArtistForm>
       </section>
       <section id="selected">
         <h2>Artist Details</h2>
@@ -89,7 +87,7 @@ function render() {
     </main>
   `;
   $app.querySelector("ArtistList").replaceWith(ArtistList());
-  $app.querySelector("NewArtistForm").replaceWith(NewArtistForm());
+
   $app.querySelector("ArtistDetails").replaceWith(ArtistDetails());
 }
 
@@ -97,3 +95,5 @@ async function init() {
   await getArtists();
   render();
 }
+
+init();
